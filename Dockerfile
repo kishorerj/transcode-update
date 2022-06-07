@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 
 # Copy local code to the container image.
-ENV APP_HOME /app
+ENV APP_HOME /transcode
 WORKDIR $APP_HOME
 COPY . ./
 
