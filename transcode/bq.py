@@ -21,14 +21,14 @@ def update_job_status_in_bq(message):
     job_id=parsed_json1["job"]["name"]
     status=parsed_json1["job"]["state"]
     error=""
-    if "error" in parsed_json1:
+    if "error" in status:
         error=parsed_json1["job"]["error"]["message"]
 
     now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
     logger.log("job: " + job_id + "," + status)
     print("job: " + job_id + "," + status)
-    project_id="kishorerjbloom"
-    dataset_id="test_sample"
+    project_id= os.environ.get('project')
+    dataset_id= os.environ.get('dataset')
     table_id="trancoder_job_dtls"
     
     
