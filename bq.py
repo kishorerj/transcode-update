@@ -1,76 +1,45 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@kishr4u 
-kishr4u
-/
-transcoder_notfns_cloudrun
-Public
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-transcoder_notfns_cloudrun/app/bq.py /
-@kishr4u
-kishr4u updare end time
-Latest commit 685672c on 8 May
- History
- 1 contributor
-47 lines (38 sloc)  1.68 KB
-   
-from google.cloud import bigquery
+import argparse, sys, os, time, json
 from datetime import datetime
+from google.cloud import logging, bigquery
+
+from google.cloud import storage
 
 
-def update_table():
+def create_bucket(bucket_name):
+    client = storage.Client()
+    bucket = storage.Bucket(bucket_name)
+    client.create_bucket(bucket)
+
+def update_job_status_in_bq(message):
+    
+    parsed_json1 = (json.loads(message))
+    client = logging.Client()
+
+    logger = client.logger("service_1")
+    logger.log("message: " + message)
+    
+    job_id=parsed_json1["job"]["name"]
+    status=parsed_json1["job"]["state"]
+    error=""
+    if "error" in parsed_json1:
+        error=parsed_json1["job"]["error"]["message"]
+
+    now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    logger.log("job: " + job_id + "," + status)
+    print("job: " + job_id + "," + status)
     project_id="kishorerjbloom"
     dataset_id="test_sample"
-    table="trancoder_job_dtls"
-    table_id = project_id+ "." + dataset_id + "." + table
+    table_id="trancoder_job_dtls"
+    
+    
     client = bigquery.Client()
     query_text = f"""
-    UPDATE `{project_id}.{dataset_id}.{table}`
-    SET status = "FAILED"
-    WHERE job_id="ABC3"
+    UPDATE `{project_id}.{dataset_id}.{table_id}`
+    SET status = "{status}", error_msg = "{error}", end_date = "{now}"
+    WHERE job_id = "{job_id}"
     """
     query_job = client.query(query_text)
 
     # Wait for query job to finish.
     query_job.result()
-
-
-def insert_table(project, dataset, table, job_id, status, input_bucket_uri, output_bucket_uri, job_template):
-    client = bigquery.Client()
-    table_id = "kishorerjbloom.test_sample.trancoder_job_dtls"
-    # datetime object containing current date and time
-    now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-     
-    rows_to_insert = [
-        {u"job_id": job_id,  "status": status, u"start_date":now,u"end_date":now,
-        u"input_media_uri": input_bucket_uri, u"output_transcoded_uri": output_bucket_uri,
-        u"job_template": job_template}]
-    errors = []
-    #errors = client.insert_rows_json(table_id, rows_to_insert)  # Make an API request.
-    client = bigquery.Client()
-    query_text = f"""
-    INSERT {project}.{dataset}.{table} (job_id, status, start_date, end_date, input_media_uri, output_transcoded_uri, job_template)  
-    VALUES ('{job_id}', '{status}','{now}', '{now}', '{input_bucket_uri}', '{output_bucket_uri}', '{job_template}')
-    """
-    query_job = client.query(query_text)
-
-    query_job.result()
-    
-
-if __name__ == "__main__":
-    insert_table("kishorerjbloom", "test_sample","trancoder_job_dtls", "ABC3", "DONE", "input", "output", "templ")
-    update_table()
-    print("main hello")
+    return 
