@@ -1,0 +1,5 @@
+Flask
+gunicorn
+google-cloud-logging
+google-cloud-storage
+google-cloud-bigquery
