@@ -2,24 +2,23 @@
 import logging as pythonlogging
 import os
 import base64
-import update_job_status
+import bq
 from google.cloud import logging
 from flask import Flask, request
-from secure import require_apikey
+from key import apikey
 
 
 app = Flask(__name__)
 
 
-@app.route('/health')
+@app.route('/test')
 def health():
-    return 'It is alive!\n'
+    return 'I am alive!'
 
-
-@app.route('/hello')
-@require_apikey
-def hello():
-    return {'hello': 'world'}
+@app.route('/secure')
+@apikey
+def health():
+    return 'I am secure!'
 
 @app.route("/", methods=["POST"])
 def index():

@@ -4,7 +4,7 @@ import hashlib
 import os
 
 
-def require_apikey(view_function):
+def apikey(view_function):
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
         API_KEY_HEADER_NAME = 'x-api-key'

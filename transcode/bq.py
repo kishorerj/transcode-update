@@ -5,10 +5,7 @@ from google.cloud import logging, bigquery
 from google.cloud import storage
 
 
-def create_bucket(bucket_name):
-    client = storage.Client()
-    bucket = storage.Bucket(bucket_name)
-    client.create_bucket(bucket)
+
 
 def update_job_status_in_bq(message):
     
@@ -29,7 +26,7 @@ def update_job_status_in_bq(message):
     print("job: " + job_id + "," + status)
     project_id= os.environ.get('project')
     dataset_id= os.environ.get('dataset')
-    table_id="trancoder_job_dtls"
+    table_id="transcoder_job_dtls"
     
     
     client = bigquery.Client()
