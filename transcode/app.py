@@ -5,20 +5,15 @@ import base64
 import bq
 from google.cloud import logging
 from flask import Flask, request
-from key import apikey
 
 
 app = Flask(__name__)
 
 
 @app.route('/test')
-def health():
+def test():
     return 'I am alive!'
 
-@app.route('/secure')
-@apikey
-def health():
-    return 'I am secure!'
 
 @app.route("/", methods=["POST"])
 def index():
@@ -34,7 +29,6 @@ def index():
         return f"Bad Request: {msg}", 400
 
     pubsub_message = envelope["message"]
-    
     client = logging.Client()
     logger = client.logger("service_1")
     logger.log(pubsub_message)
