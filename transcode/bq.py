@@ -15,6 +15,8 @@ def update_job_status_in_bq(message):
     logger = client.logger("service_1")
     logger.log("message: " + message)
     
+    location = os.environ.get('location')
+    
     job_id=parsed_json1["job"]["name"]
     status=parsed_json1["job"]["state"]
     error=""
@@ -24,8 +26,8 @@ def update_job_status_in_bq(message):
     now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
     logger.log("job: " + job_id + "," + status)
     print("job: " + job_id + "," + status)
-    project_id= os.environ.get('project')
-    dataset_id= os.environ.get('dataset')
+    project_id= os.environ.get('project_id')
+    dataset_id=os.environ.get('dataset',"transcode_media")
     table_id="transcoder_job_dtls"
     
     
