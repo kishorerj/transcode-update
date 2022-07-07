@@ -24,12 +24,16 @@ def update_job_status_in_bq(message):
         error=parsed_json1["job"]["error"]["message"]
 
     now = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-    logger.log("job: " + job_id + "," + status)
+    
     print("job: " + job_id + "," + status)
     project_id= os.environ.get('project_id')
     dataset_id=os.environ.get('dataset',"transcode_media")
     table_id="transcoder_job_dtls"
-    
+    logger.log("job: " + job_id + "," + status)
+    if dataset_id is None:
+        logger.log("dtaset is None")
+    else
+        logger.log("dataset is fine")
     
     client = bigquery.Client()
     query_text = f"""
