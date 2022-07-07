@@ -38,7 +38,7 @@ def index():
         name = base64.b64decode(pubsub_message["data"]).decode("utf-8").strip()
     logger.log(name)
    
-    update_job_status.update_job_status_in_bq(name)
+    bq.update_job_status_in_bq(name)
     return ("DONE", 204)
 
 if __name__ == "__main__":
