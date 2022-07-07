@@ -32,7 +32,7 @@ def update_job_status_in_bq(message):
     logger.log("job: " + job_id + "," + status)
     if dataset_id is None:
         logger.log("dtaset is None")
-    else
+    else:
         logger.log("dataset is fine")
     
     client = bigquery.Client()
